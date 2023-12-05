@@ -1,9 +1,10 @@
-import { omit } from "lodash";
-import userModel, { User } from "../models/user.model";
-import { excludedFields } from "../controllers/auth.controller";
+import { PrismaClient, Prisma, User } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 // CreateUser service
-export const createUser = async (input: Partial<User>) => {
-  const user = await userModel.create(input);
-  return omit(user.toJSON(), excludedFields);
+export const createUser = async (input: Prisma.UserCreateInput) => {
+  return (await prisma.user.create({
+    data: input,
+  })) as User;
 };
