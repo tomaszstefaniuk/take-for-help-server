@@ -4,9 +4,7 @@ import morgan from "morgan";
 import config from "config";
 import cors from "cors";
 import authRouter from "./routes/auth.route";
-import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
 const app = express();
 
 async function bootstrap() {
@@ -50,10 +48,4 @@ async function bootstrap() {
   });
 }
 
-bootstrap()
-  .catch((err) => {
-    throw err;
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+bootstrap();
