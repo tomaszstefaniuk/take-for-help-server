@@ -3,13 +3,24 @@ import express, { NextFunction, Request, Response } from "express";
 import morgan from "morgan";
 import config from "config";
 import cors from "cors";
-import authRouter from "./routes/auth.route";
+import authRouter from "./routes/auth.routes";
+import userRouter from "./routes/user.routes";
+import cookieParser from "cookie-parser";
+import validateEnv from "./utils/validateEnv";
+
+validateEnv();
 
 const app = express();
 
 async function bootstrap() {
   // Body Parser
   app.use(express.json({ limit: "10kb" }));
+
+  // Cookie Parser
+  app.use(cookieParser());
+
+  // Logger
+  if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
 
   // Cors
   app.use(
@@ -19,10 +30,9 @@ async function bootstrap() {
     })
   );
 
-  if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
-
   // Routes
   app.use("/api/auth", authRouter);
+  app.use("/api/users", userRouter);
 
   // UnKnown Routes
   app.all("*", (req: Request, res: Response, next: NextFunction) => {

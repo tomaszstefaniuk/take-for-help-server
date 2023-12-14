@@ -13,6 +13,7 @@ model User{
   firstName String  @db.VarChar(255)
   lastName String  @db.VarChar(255)
   email String @unique
+  verified Boolean? @default(false)
   
   password String
   role RoleEnumType? @default(user)

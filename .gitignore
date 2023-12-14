@@ -6,3 +6,8 @@
 
 # debug
 yarn-error.log
+
+# misc
+# TODO: uncomment below
+# /keys
+# *.pem
