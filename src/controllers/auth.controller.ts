@@ -123,8 +123,7 @@ export const refreshAccessTokenHandler = async (
 
     // Validate refresh token
     const decoded = verifyJwt<{ sub: string }>(
-      refresh_token,
-      "refreshTokenPublicKey"
+      refresh_token
     );
 
     if (!decoded) {
@@ -146,9 +145,12 @@ export const refreshAccessTokenHandler = async (
     }
 
     // Sign new access token
-    const access_token = signJwt({ sub: user.id }, "accessTokenPrivateKey", {
-      expiresIn: `${config.get<number>("accessTokenExpiresIn")}m`,
-    });
+    const access_token = signJwt(
+      { sub: user.id },
+      {
+        expiresIn: `${config.get<number>("accessTokenExpiresIn")}m`,
+      }
+    );
 
     // Add Cookies
     res.cookie("access_token", access_token, accessTokenCookieOptions);

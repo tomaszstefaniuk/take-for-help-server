@@ -17,6 +17,7 @@
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.10.2",
     "morgan": "^1.10.0",
+    "prisma": "^5.7.0",
     "typescript": "^5.3.2"
   },
   "dependencies": {

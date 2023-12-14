@@ -1,13 +1,11 @@
-import { PrismaClient, Prisma, User } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 import config from "config";
 import redisClient from "../utils/connectRedis";
 import { signJwt } from "../utils/jwt";
 import db from "../utils/db";
 
-// const prisma = new PrismaClient();
 export const excludedFields = ["password"];
 
-// CreateUser service
 export const createUser = async (input: Prisma.UserCreateInput) => {
   return (await db.user.create({
     data: input,
@@ -31,13 +29,19 @@ export const signTokens = async (user: Prisma.UserCreateInput) => {
   });
 
   // Create Access and Refresh tokens
-  const access_token = signJwt({ sub: user.id }, "accessTokenPrivateKey", {
-    expiresIn: `${config.get<number>("accessTokenExpiresIn")}m`,
-  });
+  const access_token = signJwt(
+    { sub: user.id },
+    {
+      expiresIn: `${config.get<number>("accessTokenExpiresIn")}m`,
+    }
+  );
 
-  const refresh_token = signJwt({ sub: user.id }, "refreshTokenPrivateKey", {
-    expiresIn: `${config.get<number>("refreshTokenExpiresIn")}m`,
-  });
+  const refresh_token = signJwt(
+    { sub: user.id },
+    {
+      expiresIn: `${config.get<number>("refreshTokenExpiresIn")}m`,
+    }
+  );
 
   return { access_token, refresh_token };
 };
