@@ -15,13 +15,7 @@ export const signJwt = (
   keyName: "accessTokenPrivateKey" | "refreshTokenPrivateKey",
   options: SignOptions
 ) => {
-  const tokenPrivateKey = loadPrivateKey(config.get<string>(`${keyName}Path`));
-
-  const privateKey = Buffer.from(tokenPrivateKey, "base64").toString("ascii");
-  return jwt.sign(payload, privateKey, {
-    ...(options && options),
-    algorithm: "RS256",
-  });
+  return jwt.sign(payload, process.env.JWT_KEY ?? "");
 };
 
 export const verifyJwt = <T>(
@@ -29,11 +23,7 @@ export const verifyJwt = <T>(
   keyName: "accessTokenPublicKey" | "refreshTokenPublicKey"
 ): T | null => {
   try {
-    const publicKey = Buffer.from(
-      config.get<string>(keyName),
-      "base64"
-    ).toString("ascii");
-    const decoded = jwt.verify(token, publicKey) as T;
+    const decoded = jwt.verify(token, process.env.JWT_KEY ?? "") as T;
 
     return decoded;
   } catch (error) {
