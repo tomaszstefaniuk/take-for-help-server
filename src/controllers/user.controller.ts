@@ -14,7 +14,7 @@ export const getMeHandler = async (
         user,
       },
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     next(err);
   }
 };

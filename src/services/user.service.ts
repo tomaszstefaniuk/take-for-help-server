@@ -1,8 +1,8 @@
 import { Prisma, User } from "@prisma/client";
 import config from "config";
 import redisClient from "../utils/connectRedis";
-import { signJwt } from "../utils/jwt";
 import db from "../utils/db";
+import { signJwt } from "../utils/jwt";
 
 export const excludedFields = ["password"];
 

@@ -1,6 +1,6 @@
 import { cleanEnv, port, str } from "envalid";
 
-function validateEnv() {
+const validateEnv = () => {
   cleanEnv(process.env, {
     DATABASE_URL: str(),
 
@@ -13,6 +13,6 @@ function validateEnv() {
     POSTGRES_PASSWORD: str(),
     POSTGRES_DB: str(),
   });
-}
+};
 
 export default validateEnv;

@@ -5,10 +5,10 @@ import {
   logoutUserHandler,
   refreshAccessTokenHandler,
 } from "../controllers/auth.controller";
-import { validate } from "../middleware/validate";
-import { loginUserSchema, createUserSchema } from "../schema/user.schema";
 import { deserializeUser } from "../middleware/deserializeUser";
 import { requireUser } from "../middleware/requireUser";
+import { validate } from "../middleware/validate";
+import { loginUserSchema, createUserSchema } from "../schema/user.schema";
 
 const router = express.Router();
 

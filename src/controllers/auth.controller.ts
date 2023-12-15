@@ -1,5 +1,8 @@
-import { CookieOptions, NextFunction, Request, Response } from "express";
+import { Prisma } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import config from "config";
+import { NextFunction, Request, Response } from "express";
+import { omit } from "lodash";
 import { LoginUserInput, CreateUserInput } from "../schema/user.schema";
 import {
   createUser,
@@ -7,38 +10,16 @@ import {
   findUniqueUser,
   signTokens,
 } from "../services/user.service";
-import { Prisma } from "@prisma/client";
-import config from "config";
 import AppError from "../utils/appError";
 import redisClient from "../utils/connectRedis";
+import {
+  accessTokenCookieOptions,
+  refreshTokenCookieOptions,
+} from "../utils/cookies";
 import { signJwt, verifyJwt } from "../utils/jwt";
-import { omit } from "lodash";
-
-const cookiesOptions: CookieOptions = {
-  httpOnly: true,
-  sameSite: "lax",
-};
-
-if (process.env.NODE_ENV === "production") cookiesOptions.secure = true;
-
-const accessTokenCookieOptions: CookieOptions = {
-  ...cookiesOptions,
-  expires: new Date(
-    Date.now() + config.get<number>("accessTokenExpiresIn") * 60 * 1000
-  ),
-  maxAge: config.get<number>("accessTokenExpiresIn") * 60 * 1000,
-};
-
-const refreshTokenCookieOptions: CookieOptions = {
-  ...cookiesOptions,
-  expires: new Date(
-    Date.now() + config.get<number>("refreshTokenExpiresIn") * 60 * 1000
-  ),
-  maxAge: config.get<number>("refreshTokenExpiresIn") * 60 * 1000,
-};
 
 export const registerHandler = async (
-  req: Request<{}, {}, CreateUserInput>,
+  req: Request<object, object, CreateUserInput>,
   res: Response,
   next: NextFunction
 ) => {
@@ -59,7 +40,7 @@ export const registerHandler = async (
         user: newUser,
       },
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
       if (err.code === "P2002") {
         return res.status(409).json({
@@ -73,7 +54,7 @@ export const registerHandler = async (
 };
 
 export const loginUserHandler = async (
-  req: Request<{}, {}, LoginUserInput>,
+  req: Request<object, object, LoginUserInput>,
   res: Response,
   next: NextFunction
 ) => {
@@ -102,7 +83,7 @@ export const loginUserHandler = async (
       status: "success",
       access_token,
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     next(err);
   }
 };
@@ -118,30 +99,28 @@ export const refreshAccessTokenHandler = async (
     const message = "Could not refresh access token";
 
     if (!refresh_token) {
-      return next(new AppError(403, message));
+      throw new AppError(403, message);
     }
 
     // Validate refresh token
-    const decoded = verifyJwt<{ sub: string }>(
-      refresh_token
-    );
+    const decoded = verifyJwt<{ sub: string }>(refresh_token);
 
     if (!decoded) {
-      return next(new AppError(403, message));
+      throw new AppError(403, message);
     }
 
     // Check if user has a valid session
     const session = await redisClient.get(decoded.sub);
 
     if (!session) {
-      return next(new AppError(403, message));
+      throw new AppError(403, message);
     }
 
     // Check if user still exist
     const user = await findUniqueUser({ id: JSON.parse(session).id });
 
     if (!user) {
-      return next(new AppError(403, message));
+      throw new AppError(403, message);
     }
 
     // Sign new access token
@@ -164,16 +143,16 @@ export const refreshAccessTokenHandler = async (
       status: "success",
       access_token,
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     next(err);
   }
 };
 
-function logout(res: Response) {
+const logout = (res: Response) => {
   res.cookie("access_token", "", { maxAge: -1 });
   res.cookie("refresh_token", "", { maxAge: -1 });
   res.cookie("logged_in", "", { maxAge: -1 });
-}
+};
 
 export const logoutUserHandler = async (
   req: Request,
@@ -187,7 +166,7 @@ export const logoutUserHandler = async (
     res.status(200).json({
       status: "success",
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     next(err);
   }
 };

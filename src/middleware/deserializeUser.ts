@@ -51,7 +51,7 @@ export const deserializeUser = async (
     res.locals.user = omit(user, excludedFields);
 
     next();
-  } catch (err: any) {
+  } catch (err: unknown) {
     next(err);
   }
 };

@@ -1,11 +1,12 @@
-require("dotenv").config();
+import "dotenv/config";
+import config from "config";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
 import morgan from "morgan";
-import config from "config";
-import cors from "cors";
 import authRouter from "./routes/auth.routes";
 import userRouter from "./routes/user.routes";
-import cookieParser from "cookie-parser";
+import { GlobalError } from "./types/error";
 import validateEnv from "./utils/validateEnv";
 
 validateEnv();
@@ -36,13 +37,13 @@ async function bootstrap() {
 
   // UnKnown Routes
   app.all("*", (req: Request, res: Response, next: NextFunction) => {
-    const err = new Error(`Route ${req.originalUrl} not found`) as any;
+    const err = new Error(`Route ${req.originalUrl} not found`) as GlobalError;
     err.statusCode = 404;
     next(err);
   });
 
   // Global Error Handler
-  app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  app.use((err: GlobalError, req: Request, res: Response) => {
     err.status = err.status || "error";
     err.statusCode = err.statusCode || 500;
 

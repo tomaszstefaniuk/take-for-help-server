@@ -1,6 +1,6 @@
 import jwt, { SignOptions } from "jsonwebtoken";
 
-export const signJwt = (payload: Object, options: SignOptions) => {
+export const signJwt = (payload: object, options: SignOptions) => {
   return jwt.sign(payload, process.env.JWT_KEY ?? "", {
     ...(options && options),
   });
