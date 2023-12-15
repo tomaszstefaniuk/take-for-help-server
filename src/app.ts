@@ -1,15 +1,27 @@
-require("dotenv").config();
+import "dotenv/config";
+import config from "config";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
 import morgan from "morgan";
-import config from "config";
-import cors from "cors";
-import authRouter from "./routes/auth.route";
+import authRouter from "./routes/auth.routes";
+import userRouter from "./routes/user.routes";
+import AppError from "./utils/appError";
+import validateEnv from "./utils/validateEnv";
+
+validateEnv();
 
 const app = express();
 
 async function bootstrap() {
   // Body Parser
   app.use(express.json({ limit: "10kb" }));
+
+  // Cookie Parser
+  app.use(cookieParser());
+
+  // Logger
+  if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
 
   // Cors
   app.use(
@@ -19,20 +31,18 @@ async function bootstrap() {
     })
   );
 
-  if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
-
   // Routes
   app.use("/api/auth", authRouter);
+  app.use("/api/users", userRouter);
 
   // UnKnown Routes
   app.all("*", (req: Request, res: Response, next: NextFunction) => {
-    const err = new Error(`Route ${req.originalUrl} not found`) as any;
-    err.statusCode = 404;
+    const err = new AppError(404, `Route ${req.originalUrl} not found`);
     next(err);
   });
 
   // Global Error Handler
-  app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  app.use((err: AppError, req: Request, res: Response) => {
     err.status = err.status || "error";
     err.statusCode = err.statusCode || 500;
 
