@@ -6,7 +6,7 @@ import express, { NextFunction, Request, Response } from "express";
 import morgan from "morgan";
 import authRouter from "./routes/auth.routes";
 import userRouter from "./routes/user.routes";
-import { GlobalError } from "./types/error";
+import AppError from "./utils/appError";
 import validateEnv from "./utils/validateEnv";
 
 validateEnv();
@@ -37,13 +37,13 @@ async function bootstrap() {
 
   // UnKnown Routes
   app.all("*", (req: Request, res: Response, next: NextFunction) => {
-    const err = new Error(`Route ${req.originalUrl} not found`) as GlobalError;
+    const err = new Error(`Route ${req.originalUrl} not found`) as AppError;
     err.statusCode = 404;
     next(err);
   });
 
   // Global Error Handler
-  app.use((err: GlobalError, req: Request, res: Response) => {
+  app.use((err: AppError, req: Request, res: Response) => {
     err.status = err.status || "error";
     err.statusCode = err.statusCode || 500;
 
