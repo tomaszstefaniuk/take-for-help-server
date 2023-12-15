@@ -37,8 +37,7 @@ async function bootstrap() {
 
   // UnKnown Routes
   app.all("*", (req: Request, res: Response, next: NextFunction) => {
-    const err = new Error(`Route ${req.originalUrl} not found`) as AppError;
-    err.statusCode = 404;
+    const err = new AppError(404, `Route ${req.originalUrl} not found`);
     next(err);
   });
 
