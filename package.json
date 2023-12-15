@@ -8,6 +8,8 @@
   },
   "scripts": {
     "start": "ts-node-dev --respawn --transpile-only src/app.ts",
+    "db:migrate": "npx prisma migrate dev --name user-entity --create-only && yarn prisma generate",
+    "db:push": "npx prisma db push",
     "lint": "next lint",
     "lint:fix": "eslint --fix ."
   },
