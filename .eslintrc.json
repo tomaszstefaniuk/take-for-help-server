@@ -57,8 +57,7 @@
           "morgan"
         ]
       }
-    ],
-    "@typescript-eslint/ban-ts-comment": "off"
+    ]
   },
   "settings": {
     "node": {

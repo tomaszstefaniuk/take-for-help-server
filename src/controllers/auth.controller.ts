@@ -3,7 +3,7 @@ import { Prisma } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import config from "config";
 import { NextFunction, Request, Response } from "express";
-import { omit } from "lodash";
+import { omit } from "ramda";
 import {
   LoginUserInput,
   CreateUserInput,
@@ -41,7 +41,7 @@ export const registerHandler = async (
       password: hashedPassword,
     });
 
-    const newUser = omit(user, excludedFields);
+    const newUser = omit(excludedFields, user);
 
     res.status(201).json({
       status: "success",
@@ -274,12 +274,9 @@ export const resetPasswordHandler = async (
     const user = await findUser({
       passwordResetToken,
       passwordResetAt: {
-        // @ts-ignore
         gt: new Date(),
       },
     });
-
-    console.log("user: ", user);
 
     if (!user) {
       return res.status(403).json({
