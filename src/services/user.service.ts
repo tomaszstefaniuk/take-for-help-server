@@ -4,11 +4,26 @@ import redisClient from "../utils/connectRedis";
 import db from "../utils/db";
 import { signJwt } from "../utils/jwt";
 
-export const excludedFields = ["password"];
+export const excludedFields = [
+  "password",
+  "verified",
+  "passwordResetAt",
+  "passwordResetToken",
+];
 
 export const createUser = async (input: Prisma.UserCreateInput) => {
   return (await db.user.create({
     data: input,
+  })) as User;
+};
+
+export const findUser = async (
+  where: Partial<Prisma.UserWhereInput>,
+  select?: Prisma.UserSelect
+) => {
+  return (await db.user.findFirst({
+    where,
+    select,
   })) as User;
 };
 
@@ -20,6 +35,14 @@ export const findUniqueUser = async (
     where,
     select,
   })) as User;
+};
+
+export const updateUser = async (
+  where: Prisma.UserWhereUniqueInput,
+  data: Prisma.UserUpdateInput,
+  select: Prisma.UserSelect
+) => {
+  return await db.user.update({ where, data, select });
 };
 
 export const signTokens = async (user: Prisma.UserCreateInput) => {

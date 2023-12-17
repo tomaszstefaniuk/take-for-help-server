@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { omit } from "lodash";
+import { omit } from "ramda";
 import { excludedFields, findUniqueUser } from "../services/user.service";
 import AppError from "../utils/appError";
 import redisClient from "../utils/connectRedis";
@@ -48,7 +48,7 @@ export const deserializeUser = async (
     }
 
     // Add user to res.locals
-    res.locals.user = omit(user, excludedFields);
+    res.locals.user = omit(excludedFields, user);
 
     next();
   } catch (err: unknown) {
