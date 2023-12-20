@@ -42,7 +42,8 @@ async function bootstrap() {
   });
 
   // Global Error Handler
-  app.use((err: AppError, req: Request, res: Response) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  app.use((err: AppError, req: Request, res: Response, next: NextFunction) => {
     err.status = err.status || "error";
     err.statusCode = err.statusCode || 500;
 

@@ -28,13 +28,13 @@ router.get("/refresh", refreshAccessTokenHandler);
 router.get("/logout", deserializeUser, requireUser, logoutUserHandler);
 
 router.post(
-  "/forgotpassword",
+  "/forgot-password",
   validate(forgotPasswordSchema),
   forgotPasswordHandler
 );
 
 router.patch(
-  "/resetpassword/:resetToken",
+  "/reset-password/:resetToken",
   validate(resetPasswordSchema),
   resetPasswordHandler
 );
