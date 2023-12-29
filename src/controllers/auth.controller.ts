@@ -70,10 +70,7 @@ export const loginUserHandler = async (
   try {
     const { email, password } = req.body;
 
-    const user = await findUniqueUser(
-      { email: email.toLowerCase() },
-      { id: true, email: true, verified: true, password: true }
-    );
+    const user = await findUniqueUser({ email: email.toLowerCase() });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return next(new AppError(400, "Invalid email or password"));
@@ -88,9 +85,14 @@ export const loginUserHandler = async (
       httpOnly: false,
     });
 
+    const newUser = omit(excludedFields, user);
+
     res.status(200).json({
       status: "success",
-      access_token,
+      data: {
+        access_token,
+        user: newUser,
+      },
     });
   } catch (err: unknown) {
     next(err);
