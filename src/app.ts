@@ -3,7 +3,6 @@ import config from "config";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
-import morgan from "morgan";
 import authRouter from "./routes/auth.routes";
 import userRouter from "./routes/user.routes";
 import AppError from "./utils/appError";
@@ -21,7 +20,11 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // Logger
-  if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
+  if (process.env.NODE_ENV === "development") {
+    import("morgan").then((morgan) => {
+      app.use(morgan.default("dev"));
+    });
+  }
 
   // Cors
   app.use(

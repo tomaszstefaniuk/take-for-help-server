@@ -46,7 +46,8 @@
       "error",
       {
         "ignores": [
-          "modules"
+          "modules",
+          "dynamicImport"
         ]
       }
     ],
