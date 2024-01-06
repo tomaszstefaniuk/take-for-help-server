@@ -1,18 +1,22 @@
 import { cleanEnv, port, str } from "envalid";
 
 const validateEnv = () => {
-  cleanEnv(process.env, {
-    DATABASE_URL: str(),
+  if (process.env.NODE_ENV === "development") {
+    cleanEnv(process.env, {
+      DATABASE_URL: str(),
 
-    PORT: port(),
-    NODE_ENV: str(),
-
-    POSTGRES_HOST: str(),
-    POSTGRES_PORT: port(),
-    POSTGRES_USER: str(),
-    POSTGRES_PASSWORD: str(),
-    POSTGRES_DB: str(),
-  });
+      POSTGRES_HOST: str(),
+      POSTGRES_PORT: port(),
+      POSTGRES_USER: str(),
+      POSTGRES_PASSWORD: str(),
+      POSTGRES_DB: str(),
+    });
+  } else {
+    cleanEnv(process.env, {
+      PORT: port(),
+      NODE_ENV: str(),
+    });
+  }
 };
 
 export default validateEnv;
