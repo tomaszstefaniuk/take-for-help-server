@@ -1,8 +1,0 @@
-version: "3"
-services:
-  take-for-help-server:
-    build:
-      context: .
-    image: take-for-help-server
-    env_file:
-      - ./.env

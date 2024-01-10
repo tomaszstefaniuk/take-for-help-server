@@ -15,5 +15,6 @@ services:
       - key: EMAIL_PASS
       - key: EMAIL_HOST
       - key: EMAIL_PORT
+      - key: REDIS_URL
     startCommand: yarn start
     buildCommand: yarn install
