@@ -4,6 +4,7 @@ const validateEnv = () => {
   cleanEnv(process.env, {
     PORT: port(),
     NODE_ENV: str(),
+    ORIGIN: str(),
 
     JWT_KEY: str(),
 
