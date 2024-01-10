@@ -1,0 +1,20 @@
+services:
+  - name: express-app
+    type: web
+    envVars:
+      - key: DATABASE_URL
+      - key: PORT
+      - key: NODE_ENV
+      - key: POSTGRES_HOST
+      - key: POSTGRES_PORT
+      - key: POSTGRES_USER
+      - key: POSTGRES_PASSWORD
+      - key: POSTGRES_DB
+      - key: JWT_KEY
+      - key: EMAIL_USER
+      - key: EMAIL_PASS
+      - key: EMAIL_HOST
+      - key: EMAIL_PORT
+      - key: REDIS_URL
+    startCommand: yarn start
+    buildCommand: yarn install
