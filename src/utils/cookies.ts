@@ -4,9 +4,8 @@ import { CookieOptions } from "express";
 export const cookiesOptions: CookieOptions = {
   httpOnly: true,
   sameSite: "lax",
+  secure: process.env.NODE_ENV === "production",
 };
-
-// if (process.env.NODE_ENV === "production") cookiesOptions.secure = true;
 
 export const accessTokenCookieOptions: CookieOptions = {
   ...cookiesOptions,
