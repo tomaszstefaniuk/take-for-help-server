@@ -3,7 +3,6 @@ import { CookieOptions } from "express";
 
 export const cookiesOptions: CookieOptions = {
   httpOnly: true,
-  secure: true,
   sameSite: "none",
 };
 
