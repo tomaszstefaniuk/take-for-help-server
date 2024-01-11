@@ -6,7 +6,7 @@ export const cookiesOptions: CookieOptions = {
   sameSite: "none",
 };
 
-if (process.env.NODE_ENV === "production") cookiesOptions.secure = true;
+// if (process.env.NODE_ENV === "production") cookiesOptions.secure = true;
 
 export const accessTokenCookieOptions: CookieOptions = {
   ...cookiesOptions,
