@@ -5,7 +5,7 @@ const redisUrl = process.env.REDIS_TLS_URL;
 const redisClient = createClient({
   url: redisUrl,
   socket: {
-    tls: true,
+    tls: process.env.NODE_ENV === "production",
     rejectUnauthorized: false,
   },
 });
