@@ -4,6 +4,10 @@ const redisUrl = process.env.REDIS_TLS_URL;
 
 const redisClient = createClient({
   url: redisUrl,
+  socket: {
+    tls: true,
+    rejectUnauthorized: false,
+  },
 });
 
 const connectRedis = async () => {
