@@ -19,6 +19,8 @@ const validateEnv = () => {
     EMAIL_PASS: str(),
     EMAIL_HOST: str(),
     EMAIL_PORT: str(),
+
+    REDIS_TLS_URL: str(),
   });
 };
 
