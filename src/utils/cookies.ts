@@ -5,6 +5,7 @@ export const cookiesOptions: CookieOptions = {
   httpOnly: true,
   sameSite: "lax",
   secure: process.env.NODE_ENV === "production",
+  domain: process.env.DOMAIN,
 };
 
 export const accessTokenCookieOptions: CookieOptions = {

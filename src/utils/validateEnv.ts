@@ -5,6 +5,7 @@ const validateEnv = () => {
     PORT: port(),
     NODE_ENV: str(),
     ORIGIN: str(),
+    DOMAIN: str(),
 
     JWT_KEY: str(),
 
@@ -19,6 +20,8 @@ const validateEnv = () => {
     EMAIL_PASS: str(),
     EMAIL_HOST: str(),
     EMAIL_PORT: str(),
+
+    REDIS_TLS_URL: str(),
   });
 };
 

@@ -23,6 +23,7 @@ import redisClient from "../utils/connectRedis";
 import {
   accessTokenCookieOptions,
   refreshTokenCookieOptions,
+  cookiesOptions,
 } from "../utils/cookies";
 import Email from "../utils/email";
 import { signJwt, verifyJwt } from "../utils/jwt";
@@ -160,9 +161,13 @@ export const refreshAccessTokenHandler = async (
 };
 
 const logout = (res: Response) => {
-  res.cookie("access_token", "", { maxAge: -1 });
-  res.cookie("refresh_token", "", { maxAge: -1 });
-  res.cookie("logged_in", "", { maxAge: -1 });
+  res.cookie("access_token", "", { ...cookiesOptions, maxAge: -1 });
+  res.cookie("refresh_token", "", { ...cookiesOptions, maxAge: -1 });
+  res.cookie("logged_in", "", {
+    ...cookiesOptions,
+    maxAge: -1,
+    httpOnly: false,
+  });
 };
 
 export const logoutUserHandler = async (

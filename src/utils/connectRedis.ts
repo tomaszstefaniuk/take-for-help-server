@@ -1,9 +1,13 @@
 import { createClient } from "redis";
 
-const redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
+const redisUrl = process.env.REDIS_TLS_URL;
 
 const redisClient = createClient({
   url: redisUrl,
+  socket: {
+    tls: process.env.NODE_ENV === "production",
+    rejectUnauthorized: false,
+  },
 });
 
 const connectRedis = async () => {
