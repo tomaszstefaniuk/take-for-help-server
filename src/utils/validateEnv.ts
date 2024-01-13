@@ -5,6 +5,7 @@ const validateEnv = () => {
     PORT: port(),
     NODE_ENV: str(),
     ORIGIN: str(),
+    DOMAIN: str(),
 
     JWT_KEY: str(),
 
