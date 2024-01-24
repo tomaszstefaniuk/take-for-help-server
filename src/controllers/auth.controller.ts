@@ -17,7 +17,7 @@ import {
 import {
   createUser,
   excludedFields,
-  findAndUpdateUser,
+  createOrUpdateUser,
   findUniqueUser,
   findUser,
   signTokens,
@@ -351,7 +351,7 @@ export const googleOauthHandler = async (
       throw new AppError(403, "Google account not verified");
     }
 
-    const user = await findAndUpdateUser(
+    const user = await createOrUpdateUser(
       { email },
       {
         firstName: given_name,

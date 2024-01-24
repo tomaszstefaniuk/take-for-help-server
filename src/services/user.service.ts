@@ -69,7 +69,7 @@ export const signTokens = async (user: Prisma.UserCreateInput) => {
   return { access_token, refresh_token };
 };
 
-export const findAndUpdateUser = async (
+export const createOrUpdateUser = async (
   where: Prisma.UserWhereUniqueInput,
   data: Prisma.UserUpdateInput
 ) => {
