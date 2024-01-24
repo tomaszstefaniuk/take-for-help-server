@@ -11,8 +11,13 @@ import {
   ResetPasswordInput,
 } from "../schemas/user.schema";
 import {
+  getGoogleOauthToken,
+  getGoogleUser,
+} from "../services/session.service";
+import {
   createUser,
   excludedFields,
+  createOrUpdateUser,
   findUniqueUser,
   findUser,
   signTokens,
@@ -315,5 +320,60 @@ export const resetPasswordHandler = async (
     });
   } catch (err: unknown) {
     next(err);
+  }
+};
+
+export const googleOauthHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const code = req.query.code;
+    const pathUrl = req.query.state || "/";
+
+    if (!code) {
+      throw new AppError(401, "Authorization code not provided!");
+    }
+
+    const { id_token, access_token: googleOauthToken } =
+      await getGoogleOauthToken({
+        code: code as string,
+      });
+
+    const { given_name, family_name, email, verified_email } =
+      await getGoogleUser({
+        id_token,
+        access_token: googleOauthToken,
+      });
+
+    if (!verified_email) {
+      throw new AppError(403, "Google account not verified");
+    }
+
+    const user = await createOrUpdateUser(
+      { email },
+      {
+        firstName: given_name,
+        lastName: family_name,
+        email,
+        provider: "Google",
+        verified: true,
+      }
+    );
+
+    const { access_token, refresh_token } = await signTokens(user);
+    res.cookie("access_token", access_token, accessTokenCookieOptions);
+    res.cookie("refresh_token", refresh_token, refreshTokenCookieOptions);
+    res.cookie("logged_in", true, {
+      ...accessTokenCookieOptions,
+      httpOnly: false,
+    });
+
+    res.redirect(`${config.get<string>("origin")}${pathUrl}`);
+  } catch (err: unknown) {
+    next(err);
+
+    return res.redirect(`${config.get<string>("origin")}/oauth/error`);
   }
 };

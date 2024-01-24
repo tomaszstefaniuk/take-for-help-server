@@ -5,6 +5,7 @@ import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
 import morgan from "morgan";
 import authRouter from "./routes/auth.routes";
+import sessionRouter from "./routes/session.routes";
 import userRouter from "./routes/user.routes";
 import AppError from "./utils/appError";
 import validateEnv from "./utils/validateEnv";
@@ -36,6 +37,7 @@ async function bootstrap() {
   // Routes
   app.use("/api/auth", authRouter);
   app.use("/api/users", userRouter);
+  app.use("/api/sessions", sessionRouter);
 
   // UnKnown Routes
   app.all("*", (req: Request, res: Response, next: NextFunction) => {

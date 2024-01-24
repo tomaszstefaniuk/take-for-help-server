@@ -68,3 +68,22 @@ export const signTokens = async (user: Prisma.UserCreateInput) => {
 
   return { access_token, refresh_token };
 };
+
+export const createOrUpdateUser = async (
+  where: Prisma.UserWhereUniqueInput,
+  data: Prisma.UserUpdateInput
+) => {
+  const createData: Prisma.UserCreateInput = {
+    email: String(data.email),
+    firstName: String(data.firstName),
+    lastName: String(data.lastName),
+    password: data.password !== undefined ? String(data.password) : "",
+    provider: String(data.provider),
+  };
+
+  return await db.user.upsert({
+    where,
+    update: data,
+    create: createData,
+  });
+};
